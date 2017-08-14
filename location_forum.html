@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+    <style>
+
+
+
+    #element1{display:inline-block; right:1%; position:absolute;}
+    #element2{display:inline-block; right: 7.7%; position:absolute;}
+
+  #map {
+        height: 400px;
+        width: 100%;
+       }
+
+
+  #bodycontent {
+    width: 100px;
+    overflow: auto;
+    height: 300px;
+    text-align: justify;
+  }
+
+  #infowindow-content {
+    display: none;
+  }
+  #map #infowindow-content {
+    display: inline;
+  }
+              /* Full-width input fields */
+      input[type=text], input[type=password] {
+          width: 50%;
+          padding: 12px 20px;
+          margin: 60px 0;
+          display: inline-block;
+          border: 1px solid #ccc;
+          box-sizing: border-box;
+      }
+
+      /* Set a style for all buttons */
+      button {
+          background-color: #182C5B;
+          color: white;
+          padding: 14px 20px;
+          margin: 8px 0;
+          border: none;
+          cursor: pointer;
+          width: 100%;
+      }
+
+      button:hover {
+          opacity: 0.8;
+      }
+
+      /* Extra styles for the cancel button */
+      .cancelbtn {
+          width: auto;
+          padding: 10px 18px;
+          background-color: #f44336;
+      }
+
+      /* Center the image and position the close button */
+      .imgcontainer {
+          text-align: center;
+          margin: 24px 0 12px 0;
+          position: relative;
+      }
+
+      img.avatar {
+          width: 40%;
+          border-radius: 50%;
+      }
+
+      .container {
+          padding: 16px;
+      }
+
+      span.psw {
+          float: right;
+          padding-top: 16px;
+      }
+
+      /* The Modal (background) */
+      .modal {
+          display: none; /* Hidden by default */
+          position: fixed; /* Stay in place */
+          z-index: 1; /* Sit on top */
+          left: 0;
+          top: 0;
+          width: 100%; /* Full width */
+          height: 100%; /* Full height */
+          overflow: auto; /* Enable scroll if needed */
+          background-color: rgb(0,0,0); /* Fallback color */
+          background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+          padding-top: 60px;
+      }
+
+      /* Modal Content/Box */
+      .modal-content {
+          background-color: #fefefe;
+          margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
+          border: 1px solid #888;
+          width: 60%:auto; /* Could be more or less, depending on screen size */
+      }
+
+      /* The Close Button (x) */
+      .close {
+          position: absolute;
+          right: 25px;
+          top: 0;
+          color: #000;
+          font-size: 35px;
+          font-weight: bold;
+      }
+
+      .close:hover,
+      .close:focus {
+          color: red;
+          cursor: pointer;
+      }
+
+      /* Add Zoom Animation */
+      .animate {
+          -webkit-animation: animatezoom 0.6s;
+          animation: animatezoom 0.6s
+      }
+
+      @-webkit-keyframes animatezoom {
+          from {-webkit-transform: scale(0)}
+          to {-webkit-transform: scale(1)}
+      }
+
+      @keyframes animatezoom {
+          from {transform: scale(0)}
+          to {transform: scale(1)}
+      }
+
+      /* Change styles for span and cancel button on extra small screens */
+      @media screen and (max-width: 300px) {
+          span.psw {
+             display: block;
+             float: none;
+          }
+          .cancelbtn {
+             width: 50%;
+          }
+      }
+
+
+    </style>
+  </head>
+  <body>
+    <div>
+      <h1 align="center">Location Flagger</h1>
+      <div id="map"></div>
+      <div id="infowindow-content">
+        <span id="place-name"  class="title"></span><br>
+        Place ID <span id="place-id"></span><br>
+        <span id="place-address"></span>
+      </div>
+      <script>
+      var map, infoWindow;
+            function initMap() {
+              map = new google.maps.Map(document.getElementById('map'), {
+                center: {lat: -34.397, lng: 150.644},
+                zoom: 6
+              });
+              infoWindow = new google.maps.InfoWindow;
+
+
+              var contentString = '<div id="content">'+
+                '<div id="siteNotice">'+
+                '</div>'+
+                '<h2 id="firstHeading" class="firstHeading">Boynton Beach</h2>'+
+                '<div id="bodyContent">'+
+                '<p><b>Man raped young girl while her mom was working over 3 years: cops</b></p>'+
+                '<p><i>By: Associated Press, New York Press</i></p>'+
+                '<p>"BOYNTON BEACH, Fla. — Investigators say a 49-year-old Florida man is accused of raping a girl over a three-year period while her mother was at work. Boynton Beach police spokeswoman Stephanie Slater said in a news release that the stepmother of the 13-year-old girl now living in Lexington, Kentucky, came across an entry in her diary in May that accused Jackson Pridemore of raping her during those years. She contacted Lexington police, who assisted in the investigation. Slater said. Pridemore previously lived with the girl and her biological mother in Boynton Beach and is believed to have had sex with the child while her mother worked. Pridemore was arrested Thursday. He’s charged with sexual assault on a child. An attorney is not listed for him. Police believe he may have assaulted other children in a similar manner."</p>'
+                '</div>'+
+                '</div>';
+
+                var infowindow = new google.maps.InfoWindow({
+                    content: contentString
+                  });
+
+                var marker = new google.maps.Marker({
+                  position: {lat: 26.5317866, lng: -80.09054650000002},
+                  map: map,
+                  title: 'Boynton Beach'
+                    });
+
+                marker.addListener('click', function() {
+                  infowindow.open(map, marker);
+                });
+
+              // Try HTML5 geolocation.
+              if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                  var pos = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                  };
+
+
+                  infoWindow.setPosition(pos);
+                  infoWindow.setContent('This is your location.');
+                  infoWindow.open(map);
+                  map.setCenter(pos);
+                }, function() {
+                  handleLocationError(true, infoWindow, map.getCenter());
+                });
+              } else {
+                // Browser doesn't support Geolocation
+                handleLocationError(false, infoWindow, map.getCenter());
+              }
+
+            }
+
+            function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+              infoWindow.setPosition(pos);
+              infoWindow.setContent(browserHasGeolocation ?
+                                    'Error: The Geolocation service failed.' :
+                                    'Error: Your browser doesn\'t support geolocation.');
+              infoWindow.open(map);
+            }
+      </script>
+      <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDgGpMNVgySTmcR3HBjTGd1Siuk3YsouJ0&libraries=places&callback=initMap"
+        async defer>
+        </script>
+    </div>
+
+<br>
+<br>
+
+  <div id="element1">
+    <button onclick="document.getElementById('id01').style.display='block'">Login</button>
+
+    <div id="id01" class="modal">
+      <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
+
+
+      <form class="modal-content animate" action="/action_page.php">
+        <div class="imgcontainer">
+          <img src="girl.png" alt="Girl" class="avatar">
+        </div>
+
+        <div class="container">
+          <label><b>Username</b></label>
+          <input type="text" placeholder="Enter Username" name="uname" required>
+          <br>
+          <label><b>Password</b></label>
+          <input type="password" placeholder="Enter Password" name="psw" required>
+
+          <button type="submit">Login</button>
+          <input type="checkbox" checked="checked"> Remember me
+        </div>
+
+        <div class="container" style="background-color:#f1f1f1">
+          <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
+          <span class="psw">Forgot <a href="#">password?</a></span>
+        </div>
+      </form>
+    </div>
+
+    <script>
+    // Get the modal
+    var modal = document.getElementById('id01');
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+    </script>
+</div>
+
+<div id="element2">
+<button onclick="document.getElementById('id01').style.display='block'" style="width:auto; border-radius:50%">+</button>
+
+<div id="id02" class="modal">
+
+  <form class="modal-content animate" action="/action_page.php">
+
+    <div class="container" style="padding=2px">
+      <h3>New Post</h3>
+      <label><b>Title</b></label>
+      <input type="text" placeholder="Enter Title" name="title" required>
+
+      <label><b>Author</b></label>
+      <input type="text" placeholder="Enter Name" name="author" required>
+
+      <label><b>Content</b></label>
+      <input type="text" placeholder="Enter content" name="content" required>
+
+      <label><b>Location</b></label>
+      <input type="text" placeholder="Enter location" name="location" required>
+
+      <button type="submit">Post</button>
+    </div>
+
+    <div class="container" style="background-color:#f1f1f1">
+      <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
+    </div>
+  </form>
+</div>
+</div>
+</div>
+
+<script>
+// Get the modal
+var modal = document.getElementById('id01');
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+</script>
+
+<div id="container">
+  <div class="jumbotron" style="text-align:center;">
+    <!-- <header> -->
+    <h1>Forum </h1>
+    <p style:"margin: 5px">You can find more stories here.</p>
+  </div>
+  <div class="row" style="margin:5px">
+    <div class="col-md-4" style="width: 400px; overflow: auto; height: 500px; text-align:justify; border:thin">
+      <h3>Man raped young girl while her mom was working over 3 years: cops</h3>
+      <p>By: Associated Press</p>
+      <p>August 11, 2017</p>
+      <p>BOYNTON BEACH, Fla. — Investigators say a 49-year-old Florida man is accused of raping a girl over a three-year period while her mother was at work. Boynton Beach police spokeswoman Stephanie Slater said in a news release that the stepmother of the 13-year-old girl now living in Lexington, Kentucky, came across an entry in her diary in May that accused Jackson Pridemore of raping her during those years. She contacted Lexington police, who assisted in the investigation. Slater said. Pridemore previously lived with the girl and her biological mother in Boynton Beach and is believed to have had sex with the child while her mother worked. Pridemore was arrested Thursday. He’s charged with sexual assault on a child. An attorney is not listed for him. Police believe he may have assaulted other children in a similar manner. </p>
+    </div>
+    <div class="col-md-4" style="width: 400px; overflow: auto; height: 500px; text-align:justify; border:1px">
+      <h3>ALEXANDRA'S TRUTH...</h3>
+      <p>By: Alexandra</p>
+      <p>This summer, a phrase spread like wildfire throughout our country that perpetrated rape culture like no other. It was said by Brock Turner’s father. “20 minutes of action.” He stated it so effortlessly. As if we were all making mountains out of molehills. As if the severity of his son’s actions would not completely alter the life of the woman he brutally attacked. A woman that I identify with, and she, although we are strangers, identifies with me. My mountain began when I was still a teenager. I was in college. I was on my way to my degree, to the life many of you may have – a Bachelor’s, a career, a solid marriage, a family, and a home that you own. All of these things sound so simple. So attainable. For me they have been completely out of reach for 11 years. I was raped as an undergraduate student. I was terrified, alone, and stayed silent. I did not know I had rights on campus, or what Title IX was. I tried pushing it aside for several months, but I couldn’t deny the reality. Instead of coming forward and seeking justice, I internalized; I tried to commit suicide 10 months later. That would not be the last time. I would attempt again four more times, each time resulting in failure. Each time resulting in someone looking at me like I just needed to get it together, like I was just another inpatient whose papers they needed to process to get to billing. Each time resulting in someone, try as they might, just not grasping the ultimate destruction that was done to my soul. Each time resulting in my parent’s staring back at me with bloodshot, tired eyes, wondering if they would ever get their daughter back. They won’t. I feel as though I died the day of my rape. I do not identify with that Alexandra. I do not know who she is. I do not remember her laughter. The dreams she wanted and had are fleeting memories. The potential she had disappeared, slipped away from her faster than she could ever imagine. Twenty minutes was all it took to take my life away. Twenty minutes was all it took to strip my soul of my identity. For years I dove into self-destruct mode. I drank uncontrollably. I began cutting. I dropped out of college because I could not handle the workload of school, let alone the stress of potentially running into my rapist on campus or having the same class together. I ruined every friendship I had because I felt it was easier to be alone. Being alone meant no one could hurt me. Loneliness was reliable; it couldn’t rape me of my identity. Any relationship I did try to start I would self-sabotage because my rapist deeply ingrained in me that I was not worth anything – love, success, a career, or even happiness. I dated men who did not treat me well because I thought I deserved it. I let myself get emotionally raped every day by my rapist. I let him win, over and over again. After my last suicide attempt, which was now over 5 years ago, I was diagnosed with post-traumatic stress disorder. I have night terrors and flashbacks. For a long time, I did not know how to even explain this to anyone. How do you explain to someone you may sleep next to that by the way, I may wake up in the middle of the night crying and screaming in panic, but don’t worry, I guess I’m all right? Moreover, how do you even begin to have conversations about being a survivor in general? It’s not casual coffee conversation, by any means.20 minutes, yet 11 years later and I am still affected. After my last suicide attempt, I don’t know what snapped in my head. </p>
+      <p>
+      I was tired. I was tired of suffering at the hands of someone who didn’t feel as though I was a human being and that I didn’t deserve to be treated as such. I was tired of feeling like maybe I was getting better to then have everything come crashing down again. I finally began searching for counseling to get the help that I needed. I began doing the things that I needed to begin to heal. I began doing the things that reminded me every day that what happened to me was not my fault. That I was not making a mountain out of a molehill. That what was done to me was not just “20 minutes of action.” It was a violent crime, and our current culture silenced me for several years. Now, I have found hope and healing in sharing my story because almost every time I do, someone comes up to me after and tells me that they identify with me, and they thank me. I spoke at the same college where I was assaulted about rape culture. I write for a national blog about my mental health. I have found that the more energy I put into trying to make a difference in changing rape culture, the more I feel like I am getting the justice I deserve, even if I know that I will never gain it from our criminal justice system. There is so much work to be done. Survivors and victims are people that you know. People you work with. People you see at the grocery store. People you do CrossFit next to. We are the women who won’t smile when you tell us we need to smile more. We are the women who come off abrasive, who you can’t quite figure out. We are the people who seem the happiest but we face internal struggles you’ll never quite understand. We lead normal lives, but they were delayed, and now we seem years behind our peers and we are distraught and disheartened by it. We are the ones who are worried that we carry too much baggage for anyone to love us, and although we have so much to give in a relationship, we are unsure anyone would give us the time of day. And admittedly, we are tired. Tired of the same rhetoric that perpetuates rape culture. Tired of seeing it all over social media, the news, and tired of everyone feeling they get to disclaim actions that ruined our lives. Tired of knowing society denounces rape and sexual and domestic violence as actions yet when they actually happen, they question the victim, question their actions, their past, their clothing, question every part of their life to justify the perpetrator. We as survivors and victims are too tired to fight all of this ourselves. We need you to join us. I am currently a member of the Survivors’ Network at Vera House. Vera House has many opportunities for community engagement and involvement in their Prevention and Education work. If you don’t know what Bystander Intervention is, ask someone who works at Vera House today before you leave. Do not be afraid to take a stand against sexual and domestic violence, on and off your social media accounts. It can make all the difference in someone’s life. It could make all the difference in my life. I’ll leave you with this – I am a survivor. Nothing in this world could make my heart break more than that identity. While some days it weighs heavily on me, I am filled with hope. While I was unfairly forced to begin a new life, to find and create a new identity, I can only continue to hope that what I am searching for is out there for me. I am this Alexandra. I am not my rape.</p>
+    </div>
+    <div class="col-md-4" style="width: 400px; overflow: auto; height: 500px; text-align:justify; border:1px">
+      <h3>Adam’s Story</h3>
+      <p>By: Rainn</p>
+      <p>Adam had always enjoyed spending time with his uncle, and would often look forward to sleepovers when they could have extended time together. On one of these occasions when he was 14, their normal activities turned abusive. He was confused by his uncle’s actions; nothing like this had happened before. For the next four years, Adam continued to struggle, both with the physical abuse and the emotional pain it brought him. “I took steps to prevent the pain, but a part of me thought that was how he loved me.” Perpetrators of child sexual abuse will often use grooming tactics, like gift-giving, spending alone time, and building age-inappropriate relationships with children and teens to keep them silent about the abuse. In Adam’s case, it was the chance to sneak cigarettes and attend expensive sporting events. The abuse had serious effects on Adam’s life including weight gain, an inability to maintain relationships, and suicidal thoughts. The effects of sexual violence can be challenging to deal with, but with the right support they can be managed. They can be particularly challenging for men and boys who face unique challenges due to social norms about masculinity. Adam also recalls questioning his own sexuality after the assaults. Many male survivors experience this uncertainty and doubt after sexual violence, especially if they experienced an erection or ejaculation during the assault. Physiological responses like an erection are involuntary, meaning the survivor has no control over them. These physical signs are not an invitation for unwanted sexual activity and in no way condone an assault. Adam did not report the assault or tell anyone from his family. He feared that he wouldn’t be believed and that the truth would destroy his family. “I think there’s a stigma attached to it that, ‘Oh, you’re a man, you should have been able to fend him off.’” Years later, Adam finally opened up to his girlfriend, who encouraged him to talk to his parents. “The ironic thing was that I opened up to my parents on October 8, 2010, ten years to the day of the last sexual attack. They supported me unconditionally and distanced themselves from him.” Today, Adam is currently working as an archivist at the Diocese of the Armenian Church of America. He enjoys spending time with his girlfriend, going to sporting events, watching TV, reading and just enjoying life. It wasn’t easy to recover from the abuse, but Adam found that talking about what happened to a supportive network of friends and family helped him to heal. “The experience I have had in the recovering from the abuse is [that] he did not win. I have not allowed myself to be defined by the abuse.”</p>
+    </div>
+    </div>
+   </div>
+
+   <br>
+   <br>
+   <br>
+
+
+
+  </body>
+</html>
